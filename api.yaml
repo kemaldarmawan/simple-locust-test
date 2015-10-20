@@ -1,4 +1,12 @@
 host: http://127.0.0.1:5000
+on_start:
+  - name: login
+    url: /login
+    method: POST
+    data: {
+            username: 'username',
+            password: 'password'
+          }
 routes:
   - name: index
     url: /
@@ -8,11 +16,3 @@ routes:
     url: /profile
     method: GET
     weight: 100
-
-  - name: login
-    url: /login
-    method: POST
-    data: {
-            username: 'username',
-            password: 'password'
-          }
