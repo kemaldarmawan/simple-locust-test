@@ -74,5 +74,5 @@ class UserBehavior(TaskSet):
 class WebsiteUser(HttpLocust):
     host = config['host']
     task_set = UserBehavior
-    min_wait = 5000
-    max_wait = 9000
+    min_wait = config.get('min_wait', 1000)
+    max_wait = config.get('max_wait', 1000)
