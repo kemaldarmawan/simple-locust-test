@@ -1,18 +1,45 @@
 host: http://127.0.0.1:5000
-on_start:
-  - name: login
-    url: /login
-    method: POST
-    data: {
-            username: 'username',
-            password: 'password'
-          }
+task:
+  tasks:
+    - on_start: 
+        routes:
+          - name: login again and again
+            url: /login
+            method: POST
+            data: {
+                    username: 'locusttest',
+                    password: 'tester'
+                  }
+      tasks:
+        - routes:
+            - name: -1
+              url: /
+              method: GET
+              weight: 2
+  routes:
+    - name: 1
+      url: /
+      method: GET
+      weight: 2
+    - name: 2
+      url: /
+      method: GET
+      weight: 2
+  on_start:
+    routes:
+      - name: login again
+        url: /login
+        method: POST
+        data: {
+                username: 'username',
+                password: 'password'
+              } 
 routes:
-  - name: index
-    url: /
-    method: GET
-
-  - name: profile
-    url: /profile
-    method: GET
-    weight: 100
+    - name: 3
+      url: /
+      method: GET
+      weight: 5
+    - name: 4
+      url: /
+      method: GET
+      weight: 5

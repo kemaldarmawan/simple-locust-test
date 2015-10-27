@@ -1,5 +1,5 @@
 import yaml
-from locust import HttpLocust, TaskSet
+from locust import HttpLocust, TaskSet, task
 
 config = yaml.load(file('api.yaml'))
 
@@ -21,19 +21,54 @@ def create_task(request):
     return task
 
 
-def load_task():
+def create_task_class(task_config):
+    class TaskSetClass(TaskSet):
+        def on_start(self):
+            if 'on_start' in task_config:
+                for request in task_config['on_start']['routes']:
+                    create_task(request)(self)
+            pass
+        tasks = load_task(task_config)
+
+        @task
+        def stop(self):
+            self.interrupt()
+
+    return TaskSetClass
+
+
+def load_task_class(tasks_config):
     tasks = {}
-    for request in config['routes']:
+    for task_set in tasks_config:
+        tasks[create_task_class(task_set)] = task_set.get('weight', 1)
+    return tasks
+
+
+def load_task_method(routes):
+    tasks = {}
+    for request in routes:
         tasks[create_task(request)] = request.get('weight', 1)
     return tasks
 
 
+def load_task(config):
+    tasks = {}
+    if 'task' in config:
+        tasks[create_task_class(config['task'])] = 1
+    if 'tasks' in config:
+        tasks.update(load_task_class(config['tasks']))
+    if 'routes' in config:
+        tasks.update(load_task_method(config['routes']))
+    return tasks
+
+
 class UserBehavior(TaskSet):
+    tasks = load_task(config)
+
     def on_start(self):
         if 'on_start' in config:
             for request in config['on_start']:
                 create_task(request)(self)
-    tasks = load_task()
 
 
 class WebsiteUser(HttpLocust):
