@@ -1,7 +1,7 @@
 import yaml
 from locust import HttpLocust, TaskSet, task
 
-config = yaml.load(file('api.yaml'))
+config = yaml.load(file('locust.yml'))
 
 
 def create_task(request):
@@ -67,7 +67,7 @@ class UserBehavior(TaskSet):
 
     def on_start(self):
         if 'on_start' in config:
-            for request in config['on_start']:
+            for request in config['on_start']['routes']:
                 create_task(request)(self)
 
 

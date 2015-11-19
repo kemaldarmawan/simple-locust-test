@@ -1,49 +1,28 @@
-host: http://127.0.0.1:5000
+host: http://www.traveloka.com
 min_wait: 5000
 max_wait: 9000
-task:
-  tasks:
-    - task:
-        on_start: 
-          routes:
-            - name: login again and again
-              url: /login
-              method: POST
-              data: {
-                      username: 'locusttest',
-                      password: 'tester'
-                    }
-      tasks:
-        - task:
-            routes:
-              - name: -1
-                url: /
-                method: GET
-                weight: 2
+on_start:
   routes:
-    - name: 1
+    - name: do something before swarm
+      url: /
+      method: POST
+      data: {
+              username: 'username',
+              password: 'password'
+            }
+    - name: do something more before swarm
       url: /
       method: GET
-      weight: 2
-    - name: 2
-      url: /
-      method: GET
-      weight: 2
-  on_start:
-    routes:
-      - name: login again
-        url: /login
-        method: POST
-        data: {
-                username: 'username',
-                password: 'password'
-              } 
+      params: {
+                params1: 'username',
+                params2: 'password'
+              }
 routes:
-    - name: 3
-      url: /
-      method: GET
-      weight: 5
-    - name: 4
-      url: /
-      method: GET
-      weight: 5
+  - name: 3
+    url: /
+    method: GET
+    weight: 5
+  - name: 4
+    url: /
+    method: GET
+    weight: 5
