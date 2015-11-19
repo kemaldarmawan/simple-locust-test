@@ -18,11 +18,11 @@ on_start:
                 params2: 'password'
               }
 routes:
-  - name: 3
+  - name: url 1
     url: /
     method: GET
     weight: 5
-  - name: 4
+  - name: url 2
     url: /
     method: GET
     weight: 5
